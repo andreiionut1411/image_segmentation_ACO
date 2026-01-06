@@ -4,7 +4,7 @@ We have multiple approaches for Image Segmentation using Ant-Colony Optimization
 
 There are some sample images in the `/images` folder. These images come from the "Oxford-IIIT Pet Dataset".
 
-If you want to visualize the results and you want to change the image, then you need to enter that script and change manually in the code the image path.
+If you want to visualize the results and you want to change the image, then you need to enter that script and change manually in the code the image path. For training the NN model we used the data splits obtained from running split_dataset.py. We used only the Abyssinian cats from the dataset.
 
 ## 1. Image Thresholding
 
