@@ -93,11 +93,12 @@ class ACOEdgeDetector:
 
 def get_instance_segmentation(pheromone_map):
     tau_norm = cv2.normalize(pheromone_map, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
-    _, valleys = cv2.threshold(tau_norm, np.mean(tau_norm), 255, cv2.THRESH_BINARY_INV)
-    kernel = np.ones((5,5), np.uint8)
-    sure_bg = cv2.dilate(valleys, kernel, iterations=3) # Expand background
+    tau_blurred = cv2.GaussianBlur(tau_norm, (5, 5), 0)
+    _, valleys = cv2.threshold(tau_blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
-    sure_fg = cv2.erode(valleys, kernel, iterations=4)
+    kernel = np.ones((5, 5), np.uint8)
+    sure_bg = cv2.dilate(valleys, kernel, iterations=2)
+    sure_fg = cv2.erode(valleys, kernel, iterations=7)
     sure_fg = np.uint8(sure_fg)
     unknown = cv2.subtract(sure_bg, sure_fg)
     _, markers = cv2.connectedComponents(sure_fg)
@@ -112,6 +113,7 @@ def get_instance_segmentation(pheromone_map):
 
     return labels, tau_norm
 
+
 img_path = 'images/Abyssinian_122.jpg'
 detector = ACOEdgeDetector(img_path)
 
@@ -125,7 +127,7 @@ detector.run_construction_step()
 # print("Finalizing Binary Threshold...")
 # edges = detector.get_binary_edges()
 
-# Display results
+# # Display results
 # plt.figure(figsize=(10, 5))
 # plt.subplot(1, 2, 1)
 # plt.title("Filtered Original")
