@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from scipy.ndimage import uniform_filter
+import os
+from tqdm import tqdm
 
 
 def get_2d_histogram(image, k=3):
@@ -92,4 +94,52 @@ def execute_segmentation(img_path):
     plt.title(f"Otsu-Scatter Hybrid (s={best_s}, t={best_t})")
     plt.show()
 
+
+def run_aco_test_pipeline(images_dir, save_dir, manifest_path):
+    os.makedirs(save_dir, exist_ok=True)
+
+    if not os.path.exists(manifest_path):
+        print(f"Error: {manifest_path} not found.")
+        return
+
+    with open(manifest_path, "r") as f:
+        test_names = [line.strip() for line in f]
+
+    print(f"Starting ACO processing for {len(test_names)} test images...")
+
+    for name in tqdm(test_names):
+        img_path = os.path.join(images_dir, f"{name}.jpg")
+        save_path = os.path.join(save_dir, f"{name}.npy")
+
+        if os.path.exists(save_path):
+            continue
+
+        img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+        if img is None:
+            continue
+
+        p_ij, local_avg = get_2d_histogram(img, k=3)
+        evaluator = Otsu2D(p_ij)
+        optimizer = HybridSearch(evaluator)
+        s_aco, t_aco = optimizer.run()
+
+        best_s, best_t, best_f = s_aco, t_aco, -1
+        for s in range(s_aco-5, s_aco+6):
+            for t in range(t_aco-5, t_aco+6):
+                f = evaluator.fitness(s, t)
+                if f > best_f:
+                    best_f, best_s, best_t = f, s, t
+
+        mask = ((img <= best_s) & (local_avg <= best_t)).astype(np.int32)
+        np.save(save_path, mask)
+
+
 execute_segmentation('images/Abyssinian_103.jpg')
+
+# EVALUATION
+# This is for evaluation
+# run_aco_test_pipeline(
+#         images_dir='./images',
+#         save_dir='./thresh_results',
+#         manifest_path='test_files.txt'
+#     )

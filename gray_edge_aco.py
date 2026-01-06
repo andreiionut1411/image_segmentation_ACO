@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import scipy.ndimage as ndimage
+import os
+from tqdm import tqdm
 
 class ACOEdgeDetector:
     def __init__(self, image_path):
@@ -114,6 +116,8 @@ def get_instance_segmentation(pheromone_map):
     return labels, tau_norm
 
 
+# VISUALIZATION
+# This part runs the ACO edge detector and visualizes the results. Uncomment to run it.
 img_path = 'images/Abyssinian_122.jpg'
 detector = ACOEdgeDetector(img_path)
 
@@ -157,3 +161,44 @@ plt.axis('off')
 
 plt.tight_layout()
 plt.show()
+
+
+
+
+# EVALUATION
+# If you want to create the instance segmentation masks for evaluation, uncomment this:
+# images_dir = './images'
+# save_dir = './aco_gray_results'
+# manifest_path = 'test_files.txt'
+# os.makedirs(save_dir, exist_ok=True)
+
+# if os.path.exists(manifest_path):
+#     with open(manifest_path, 'r') as f:
+#         test_names = set(line.strip() for line in f)
+#     print(f"Loaded {len(test_names)} test filenames. Filtering...")
+# else:
+#     print(f"Critical Error: {manifest_path} not found! Please run the NN split script first.")
+#     exit()
+
+# image_files = [f for f in os.listdir(images_dir) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
+
+# for filename in tqdm(image_files):
+#     name = os.path.splitext(filename)[0]
+
+#     if name not in test_names:
+#         continue
+
+#     img_path = os.path.join(images_dir, filename)
+#     save_path = os.path.join(save_dir, f"{name}.npy")
+
+#     if os.path.exists(save_path):
+#         continue
+
+#     try:
+#         detector = ACOEdgeDetector(img_path)
+#         detector.run_construction_step()
+#         labels, _ = get_instance_segmentation(detector.tau)
+#         np.save(save_path, labels)
+
+#     except Exception as e:
+#         print(f"Error on {filename}: {e}")

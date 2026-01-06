@@ -111,7 +111,7 @@ def get_instance_segmentation(pheromone_map):
 
 # VISUALZATION
 # If you want to visualize the results uncomment this code:
-img_path = '/home/andrei/facultate/an2/sos_v2/weizmann_horse_db/Abyssinian_106.jpg'
+img_path = 'images/Abyssinian_122.jpg'
 detector = ACOEdgeDetector(img_path)
 
 print("Starting ACO Construction...")
