@@ -20,7 +20,13 @@ We use ACO to detect the edges in an image. After we find the edges, we need to 
 
 ## 3. Color Edge Detection ACO
 
-The issue with the previous approach is that it loses the information from the RGB channels and for example, for the image Abyssnian_106.jpg, we can clearly see the cat is on a red background, but after applying grayscale, the difference between brown and red is lost and the previous approach fails. This is why we looked at the color channels next.
+The issue with the previous approach is that it loses the information from the RGB channels and for example, for the image Abyssnian_106.jpg, we can clearly see the cat is on a red background, but after applying grayscale, the difference between brown and red is lost and the previous approach fails. This is why we looked at the color channels next. To run the color edge detection, run:
+
+`python3 color_edge_aco.py`
+
+## 4. NN models
+
+We used an U-Net that we trained and stored the models in the models/ folder. We have a finetuned one, and one model that was trained from scratch. To see how they work, you can run the `evaluate_nn.py` script and change the path to the model depending on which you want to test.
 
 # Evaluation
 
