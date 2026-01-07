@@ -75,7 +75,7 @@ class ACOEdgeDetector:
         self.tau = nms_tau
 
     def get_binary_edges(self):
-        """ Iterative threshold selection[cite: 547, 551]. """
+        """ Iterative threshold selection """
         T = np.mean(self.tau)
         while True:
             G1 = self.tau[self.tau > T]

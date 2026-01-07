@@ -26,7 +26,7 @@ class ACOEdgeDetector:
         self.tau = np.full((self.M1, self.M2), self.tau_init)
 
     def calculate_visibility(self):
-        """ Computes heuristic information based on local variation[cite: 507, 512]. """
+        """ Computes heuristic information based on local variation"""
         V = np.zeros_like(self.img)
         padded = np.pad(self.img, 1, mode='edge')
 
@@ -41,7 +41,7 @@ class ACOEdgeDetector:
         self.eta = V / (np.sum(V) + 1e-9)
 
     def run_construction_step(self):
-        """ Simulation of ant movements and pheromone updates[cite: 489, 541]. """
+        """ Simulation of ant movements and pheromone updates. """
         self.calculate_visibility()
 
         for n in range(self.N):
@@ -78,7 +78,7 @@ class ACOEdgeDetector:
         self.tau = nms_tau
 
     def get_binary_edges(self):
-        """ Iterative threshold selection[cite: 547, 551]. """
+        """ Iterative threshold selection. """
         T = np.mean(self.tau)
         while True:
             G1 = self.tau[self.tau > T]
